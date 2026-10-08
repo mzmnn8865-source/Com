@@ -4,197 +4,209 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>قاب جادویی</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&display=swap">
 <style>
-:root{--bg:#0b1316;--s1:#131d21;--s2:#1c2a2f;--ink:#e9f1ef;--mute:#8fa3a6;--line:#ffffff1a;--a:#b9a7ff;--b:#ffc6a5;
+:root{--bg:#000;--surf:#16161d;--ink:#f2f2f7;--mute:#a6a6b8;--line:#ffffff24;--ind:#8f98f7;--onind:#0b0b12;--amb:#ffb454;--ambt:#ffb454;--onamb:#16161d;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f3f0ea;--s1:#fff;--s2:#ebe6dd;--ink:#1a2326;--mute:#6a7b7e;--line:#0000001a;--a:#7a5cf0;--b:#f08a5c}}
-:root[data-theme="light"]{--bg:#f3f0ea;--s1:#fff;--s2:#ebe6dd;--ink:#1a2326;--mute:#6a7b7e;--line:#0000001a;--a:#7a5cf0;--b:#f08a5c}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#fff;--surf:#f1f1f5;--ink:#16161d;--mute:#585868;--line:#16161d24;--ind:#4650c8;--onind:#fff;--ambt:#a85a00}}
+:root[data-theme="light"]{--bg:#fff;--surf:#f1f1f5;--ink:#16161d;--mute:#585868;--line:#16161d24;--ind:#4650c8;--onind:#fff;--ambt:#a85a00}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px;min-height:100%}
-.wrap{width:100%;max-width:560px;display:flex;flex-direction:column;gap:12px}
-header{display:flex;align-items:baseline;justify-content:space-between;padding:0 4px}
-h1{font-size:1.2rem;font-weight:800;margin:0;letter-spacing:-.01em}
-header span{font-size:.78rem;color:var(--mute)}
-#stage{position:relative;width:100%;aspect-ratio:4/3;background:#000;border-radius:28px;overflow:hidden;touch-action:none;border:1px solid var(--line)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.9 Vazirmatn,Tahoma,sans-serif;text-align:right}
+.wrap{max-width:560px;margin:0 auto}
+button{font:inherit;color:inherit;text-align:right;cursor:pointer}
+button:focus-visible{outline:3px solid var(--ind);outline-offset:2px}
+.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+header{display:flex;justify-content:space-between;align-items:flex-start;padding:24px 16px 16px}
+h1{font:900 32px/1.3 Vazirmatn,Tahoma,sans-serif;margin:0}
+header p{margin:0;color:var(--mute);font-size:14px}
+.ib{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:none;display:grid;place-items:center;padding:0;flex:none}
+#stage{position:relative;aspect-ratio:4/3;background:#000;border-block:1px solid var(--line);touch-action:none}
 canvas{width:100%;height:100%;display:block}
-.pill{position:absolute;top:12px;background:#0009;color:#fff;padding:5px 12px;border-radius:999px;font-size:.78rem;max-width:calc(100% - 110px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#status{inset-inline-start:12px}#fps{inset-inline-end:12px;font-variant-numeric:tabular-nums;direction:ltr}
-#dock{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;padding:8px 14px;border-radius:999px;background:#0a1013b0}
-#dock button{width:42px;height:42px;padding:0;display:grid;place-items:center;border-radius:50%;background:#ffffff1c;border:0;color:#fff}
-#dock #shot{width:60px;height:60px;background:#fff0;border:3px solid #fff}
-#dock #shot i{width:42px;height:42px;border-radius:50%;background:#fff;display:block}
-#dock #shot:active i{transform:scale(.88)}
-svg.ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-#go{position:absolute;inset:0;display:none;place-items:center;background:#000a}
-#go button{background:var(--a);color:#111;font-weight:800;padding:14px 26px;border:0;border-radius:999px;font:inherit;font-weight:800}
-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--s1);padding:4px;border-radius:999px;border:1px solid var(--line)}
-nav button{border:0;background:none;color:var(--mute);font:inherit;font-size:.88rem;font-weight:600;padding:10px 0;border-radius:999px;cursor:pointer}
-nav button[aria-selected=true]{background:var(--ink);color:var(--bg)}
-.panel{display:none;background:var(--s1);border:1px solid var(--line);border-radius:24px;padding:16px;flex-direction:column;gap:14px}
-.panel.on{display:flex}
-.lab{font-size:.8rem;color:var(--mute);margin-bottom:6px;display:flex;justify-content:space-between}
-#chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--s2);color:var(--ink);font:inherit;font-size:.85rem;padding:9px 16px;border-radius:999px;cursor:pointer}
-.chip[aria-pressed=true]{background:linear-gradient(135deg,var(--a),var(--b));border-color:transparent;color:#17141f;font-weight:800}
-input[type=range]{width:100%;accent-color:var(--a);height:28px}
-#sw{display:flex;gap:12px}#sw button{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer}
-#sw button[aria-pressed=true]{border-color:var(--ink)}
-.tg{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:.92rem}
-.tg:first-child{border-top:0;padding-top:0}
-.tg small{display:block;color:var(--mute);font-size:.75rem;margin-top:2px}
-.sw{flex:none;width:46px;height:28px;border-radius:99px;background:var(--s2);border:1px solid var(--line);position:relative;cursor:pointer;padding:0}
+#go{position:absolute;inset:0;display:none;place-items:center;background:#000c}
+.btn{background:var(--amb);color:var(--onamb);border:0;border-radius:999px;padding:12px 32px;font-weight:700}
+#stat{padding:16px 16px 0;font-size:14px;color:var(--mute);min-height:40px}
+#bar{display:flex;gap:16px;align-items:center;padding:16px}
+#shot{width:64px;height:64px;border-radius:50%;border:2px solid var(--amb);background:none;display:grid;place-items:center;padding:0}
+#shot i{width:48px;height:48px;border-radius:50%;background:var(--amb);display:block}
+#shot:active i{transform:scale(.9)}
+nav{display:flex;gap:32px;padding:0 16px;border-bottom:1px solid var(--line)}
+nav button{background:none;border:0;color:var(--mute);font-weight:600;padding:16px 0;border-bottom:2px solid transparent;margin-bottom:-1px}
+nav button[aria-selected=true]{color:var(--ink);border-color:var(--amb)}
+.panel{display:none;padding:32px 16px 48px;flex-direction:column;gap:32px}.panel.on{display:flex}
+h2{font:700 15px/1.6 Vazirmatn,Tahoma,sans-serif;margin:0 0 16px}
+.sub{color:var(--mute);font-size:14px;margin:0}
+#tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{height:48px;border:1px solid var(--line);background:var(--surf);border-radius:12px;padding:0 16px;font-weight:600}
+.tile[aria-pressed=true]{background:var(--ind);border-color:var(--ind);color:var(--onind)}
+.lab{display:flex;justify-content:flex-start;gap:16px;color:var(--mute);font-size:14px;margin-bottom:8px}
+input[type=range]{width:100%;accent-color:var(--ind);height:32px;margin:0}
+#sw{display:flex;gap:16px}#sw button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);padding:0;outline:2px solid transparent;outline-offset:3px}
+#sw button[aria-pressed=true]{outline-color:var(--ink)}
+.tg{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+.tg:first-of-type{border-top:0;padding-top:0}.tg small{display:block;color:var(--mute);font-size:13px;line-height:1.7}
+.sw{flex:none;width:48px;height:28px;border-radius:99px;background:var(--surf);border:1px solid var(--line);position:relative;padding:0}
 .sw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:20px;height:20px;border-radius:50%;background:var(--mute);transition:transform .2s}
-.sw[aria-pressed=true]{background:var(--a)}
-.sw[aria-pressed=true]::after{background:#fff;transform:translateX(-18px)}
-#ring{display:flex;align-items:center;gap:16px}
-#ring svg{width:112px;height:112px;flex:none;transform:rotate(-90deg)}
-#big{font-size:2.3rem;font-weight:800;line-height:1}
-#verdict{font-weight:600;margin-top:6px}#best{font-size:.8rem;color:var(--mute);margin-top:6px;line-height:1.7}
-.row .t{display:flex;justify-content:space-between;font-size:.9rem;font-weight:600}
-.row .bar{height:6px;border-radius:9px;background:var(--s2);margin:7px 0 5px;overflow:hidden}
-.row .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b));border-radius:9px;transition:width .5s}
-.row p{margin:0;font-size:.78rem;color:var(--mute);line-height:1.7}
-.note{font-size:.75rem;color:var(--mute);line-height:1.8;text-align:center}
-#modal{position:fixed;inset:0;background:#000d;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;z-index:9}
-#modal img{max-width:100%;max-height:70%;border-radius:18px}#modal p{color:#fff;margin:0;font-size:.9rem}
-#modal button{background:#fff;border:0;border-radius:99px;padding:11px 28px;font:inherit;font-weight:700}
-button:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.sw[aria-pressed=true]{background:var(--ind);border-color:var(--ind)}.sw[aria-pressed=true]::after{background:var(--onind);transform:translateX(-20px)}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:24px 16px}
+.track{height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin:8px 0}.track i{display:block;height:100%;width:0;background:var(--ind);transition:width .4s}
+.row{padding:16px 0;border-top:1px solid var(--line)}.row:first-child{border-top:0;padding-top:0}
+.row .t{display:flex;justify-content:flex-start;gap:16px;font-weight:600}.row .t b{color:var(--ambt);font-variant-numeric:tabular-nums;min-width:32px}
+.row p{margin:0;color:var(--mute);font-size:14px}.row .tr{font-size:13px;color:var(--ink);margin-top:4px}
+.big{font:900 64px/1.1 Vazirmatn,Tahoma,sans-serif;color:var(--ambt)}
+#facts{display:grid;grid-template-columns:1fr 1fr;gap:24px 16px}
+#facts div span{display:block;color:var(--mute);font-size:13px}#facts div b{font-weight:600}
+.dot{display:inline-block;width:14px;height:14px;border-radius:4px;border:1px solid var(--line);vertical-align:-2px;margin-inline-end:8px}
+.note{color:var(--mute);font-size:13px;line-height:1.9;margin:0}
+.lv{display:grid;grid-template-columns:88px 1fr 40px;gap:16px;align-items:center;font-size:14px;padding:4px 0}.lv .track{margin:0}.lv em{font-style:normal;color:var(--mute);font-variant-numeric:tabular-nums}
+#modal{position:fixed;inset:0;background:#000e;display:none;flex-direction:column;justify-content:center;gap:16px;padding:24px;z-index:9;color:#fff}
+#modal img{max-width:100%;max-height:68%;border-radius:12px;align-self:flex-start}#modal p{margin:0}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute"><symbol id="flip" viewBox="0 0 24 24"><path d="M4 8h13M14 5l3 3-3 3M20 16H7M10 13l-3 3 3 3"/></symbol><symbol id="full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol><symbol id="theme" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16"/></symbol></svg>
 <div class="wrap">
-<header><h1>قاب جادویی</h1><span>با دو دستت قاب بساز</span></header>
-<div id="stage"><canvas id="cv" width="640" height="480"></canvas>
-<div class="pill" id="status">دوربین داره روشن می‌شه…</div><div class="pill" id="fps">-- fps</div>
-<div id="dock"><button id="flip" aria-label="عوض کردن دوربین"><svg class="ic" viewBox="0 0 24 24"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></button><button id="shot" aria-label="عکس بگیر"><i></i></button><button id="full" aria-label="تمام‌صفحه"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>
-<div id="go"><button id="goBtn">دوربین رو روشن کن</button></div></div>
+<header><div><h1>قاب جادویی</h1><p>با دو دستت قاب بساز و فیلتر بنداز</p></div><button class="ib" id="theme" aria-label="تغییر حالت شب و روز"><svg class="ic"><use href="#theme"/></svg></button></header>
+<div id="stage"><canvas id="cv" width="640" height="480"></canvas><div id="go"><button class="btn" id="goBtn">دوربین رو روشن کن</button></div></div>
+<div id="stat">دوربین داره روشن می‌شه…</div>
+<div id="bar"><button id="shot" aria-label="عکس بگیر"><i></i></button><button class="ib" id="flip" aria-label="عوض کردن دوربین"><svg class="ic"><use href="#flip"/></svg></button><button class="ib" id="full" aria-label="تمام‌صفحه"><svg class="ic"><use href="#full"/></svg></button></div>
 <nav role="tablist"><button role="tab" aria-selected="true" data-p="p1">فیلترها</button><button role="tab" aria-selected="false" data-p="p2">تحلیل صورت</button><button role="tab" aria-selected="false" data-p="p3">تنظیمات</button></nav>
 <section class="panel on" id="p1">
-<div><div class="lab">فیلتر داخل قاب</div><div id="chips"></div></div>
-<div><div class="lab"><span>شدت افکت</span><span id="kv">60</span></div><input type="range" id="k" min="0" max="100" value="60"></div>
-<div><div class="lab">رنگ لبه‌ی قاب</div><div id="sw"></div></div>
+<div><h2>فیلتر داخل قاب</h2><div id="tiles"></div></div>
+<div><h2>شدت افکت</h2><div class="lab"><span>کم تا زیاد</span><span id="kv">۶۰</span></div><input type="range" id="k" min="0" max="100" value="60"></div>
+<div><h2>رنگ لبه‌ی قاب</h2><div id="sw"></div></div>
+<p class="sub">قاب رو با شست و اشاره‌ی دو دستت بساز. برای رفتن به فیلتر بعدی قاب رو کامل ببند و دوباره باز کن.</p>
 </section>
 <section class="panel" id="p2">
-<div id="ring"><svg viewBox="0 0 120 120"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b9a7ff"/><stop offset="1" stop-color="#ffc6a5"/></linearGradient></defs><circle cx="60" cy="60" r="52" fill="none" stroke="#8884" stroke-width="9"/><circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="url(#g)" stroke-width="9" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327"/></svg>
-<div><div id="big">--</div><div id="verdict">منتظر صورتت هستم</div><div id="best">یه کم جلوی دوربین بیا تا تحلیل کنم.</div></div></div>
-<div id="rows" style="display:flex;flex-direction:column;gap:14px"></div>
-<div class="note">این تحلیل فقط هندسه‌ی صورت، نور و حالتت رو می‌سنجه و بیشتر برای سرگرمیه. زیبایی رو هیچ عددی تعیین نمی‌کنه.</div>
+<div class="card"><h2>اسکن چهره</h2><p class="sub" id="fst">صورتت رو صاف و رو به دوربین بگیر، بعد دکمه‌ی شروع رو بزن. اسکن حدود پنج ثانیه طول می‌کشه.</p><div class="track" style="margin:16px 0"><i id="prog"></i></div><button class="btn" id="scan">شروع اسکن</button></div>
+<div><h2>وضعیت لحظه‌ای</h2><div id="live"></div></div>
+<div id="rep" hidden>
+<div class="card" style="margin-bottom:32px"><div class="sub">نمره‌ی کلی چهره</div><div class="big" id="ov">۰</div><p id="vd" style="margin:8px 0 0;font-weight:600"></p><p class="note" id="tips" style="margin-top:16px"></p></div>
+<h2>بررسی بخش به بخش</h2><div id="cats" style="margin-bottom:32px"></div>
+<h2>ویژگی‌های چهره‌ت</h2><div id="facts" style="margin-bottom:32px"></div>
+<p class="note">نمره‌ها فقط میزان هماهنگی نسبت‌های چهره‌ت رو با میانگین‌های آماری و قانون‌های رایج تناسب می‌سنجن و تقریبی‌ان. نور، زاویه و کیفیت دوربین روشون اثر دارن. این‌ها قضاوت درباره‌ی زیبایی نیست.</p>
+</div>
 </section>
 <section class="panel" id="p3"></section>
 </div>
-<div id="modal"><img id="mimg" alt=""><p>روی عکس نگه دار تا ذخیره بشه</p><button id="mc">بستن</button></div>
+<div id="modal"><img id="mimg" alt=""><p>روی عکس نگه دار تا ذخیره بشه.</p><button class="btn" id="mc" style="align-self:flex-start">بستن</button></div>
 <script>
-const $=id=>document.getElementById(id),cv=$('cv'),ctx=cv.getContext('2d',{alpha:false,desynchronized:true});
-const S={mirror:true,facing:'user',skel:true,face:true,gest:true,auto:false,light:false,K:.6,col:'#ffffff'};
-let W=640,H=480,SW=80,SH=60,mode='demo',fi=0,pts=null,hands=[],fl=null,lmH=null,lmF=null,lostH=0,lostF=0,coll=false,lastSw=0,lastT=-1,fc=0,msg='',stream=null;
+const $=id=>document.getElementById(id),cv=$('cv'),ctx=cv.getContext('2d',{alpha:false});
+const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const S={mirror:true,facing:'user',skel:true,gest:true,auto:false,light:false,K:.6,col:'#ffffff'};
+let W=640,H=480,SW=80,SH=60,mode='demo',fi=0,pts=null,hands=[],fl=null,lmH=null,lmF=null,mod=null,fset=null,faceLoad=false,lostH=0,lostF=0,coll=false,lastSw=0,lastT=-1,fn=0,msg='',fps=0,stream=null,tab='p1',noHand=0;
 const FILTERS=['نقطه‌چین قرمز','شبکه','پاپ‌آرت','نقطه‌چین سیاه‌سفید','جدا شدن رنگ','حرارتی','سپیا','شیشه‌ی مات','نئون لبه','پیکسلی','وارونه','سیاه‌سفید'];
 const video=document.createElement('video');video.playsInline=true;video.muted=true;
 const mk=()=>{const c=document.createElement('canvas');return[c,c.getContext('2d',{willReadFrequently:true})]};
 const[sc,sx]=mk(),[mc,mx]=mk(),[pc,px]=mk(),[lc,lx]=mk(),tmp=document.createElement('canvas'),tx=tmp.getContext('2d');
-lc.width=48;lc.height=36;
 let quad,drag=-1;
-const say=t=>{if(t!==msg){msg=t;$('status').textContent=t}};
-function sizeAll(w,h){const f=Math.min(1,640/w);W=Math.round(w*f);H=Math.round(h*f);cv.width=W;cv.height=H;tmp.width=W;tmp.height=H;$('stage').style.aspectRatio=W+'/'+H;SW=S.light?56:80;SH=Math.round(SW*H/W);sc.width=mc.width=SW;sc.height=mc.height=SH;quad=[[W*.3,H*.3],[W*.7,H*.3],[W*.7,H*.7],[W*.3,H*.7]]}
+const say=t=>{msg=t;paint()};const paint=()=>$('stat').textContent=msg+(fps?' · '+fa(fps)+' فریم':'');
+function sizeAll(w,h){const f=Math.min(1,640/w);W=Math.round(w*f);H=Math.round(h*f);cv.width=W;cv.height=H;tmp.width=lc.width=W;tmp.height=lc.height=H;$('stage').style.aspectRatio=W+'/'+H;SW=S.light?56:80;SH=Math.round(SW*H/W);sc.width=mc.width=SW;sc.height=mc.height=SH;quad=[[W*.3,H*.3],[W*.7,H*.3],[W*.7,H*.7],[W*.3,H*.7]]}
 sizeAll(640,480);
-/* UI */
-const chips=$('chips');
-FILTERS.forEach((n,i)=>{const b=document.createElement('button');b.className='chip';b.textContent=n;b.onclick=()=>setF(i);chips.appendChild(b)});
-function setF(i){fi=(i+FILTERS.length)%FILTERS.length;[...chips.children].forEach((c,k)=>c.setAttribute('aria-pressed',k===fi))}
-setF(0);
-$('k').oninput=e=>{S.K=e.target.value/100;$('kv').textContent=e.target.value};
-['#ffffff','#b9a7ff','#ffc6a5','#7be0b0','#ff6b8a'].forEach((c,i)=>{const b=document.createElement('button');b.style.background=c;b.setAttribute('aria-label','رنگ '+(i+1));b.setAttribute('aria-pressed',i===0);b.onclick=()=>{S.col=c;[...$('sw').children].forEach(x=>x.setAttribute('aria-pressed',x===b))};$('sw').appendChild(b)});
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p))});
-const TG=[['skel','اسکلت دست','خطوط و مفصل‌های انگشتات'],['face','نشونه‌های صورت','خط‌کش و نقطه‌های تحلیل روی صورت'],['gest','عوض شدن با بستن قاب','قاب رو ببند و باز کن تا فیلتر بعدی بیاد'],['auto','چرخش خودکار فیلتر','هر چهار ثانیه یه فیلتر جدید'],['light','حالت سبک','اگه گوشی‌ت لگ می‌زنه روشنش کن'],['mirror','آینه‌ای','تصویر مثل آینه نشون داده می‌شه']];
-TG.forEach(([k,n,s])=>{const d=document.createElement('div');d.className='tg';d.innerHTML='<div>'+n+'<small>'+s+'</small></div>';const b=document.createElement('button');b.className='sw';b.setAttribute('aria-pressed',S[k]);b.onclick=()=>{S[k]=!S[k];b.setAttribute('aria-pressed',S[k]);if(k==='light')sizeAll(video.videoWidth||640,video.videoHeight||480)};d.appendChild(b);$('p3').appendChild(d);TG.find(t=>t[0]===k).push(b)});
-function setTg(k,v){S[k]=v;TG.find(t=>t[0]===k)[3].setAttribute('aria-pressed',v)}
+/* ---- UI ---- */
+FILTERS.forEach((n,i)=>{const b=document.createElement('button');b.className='tile';b.textContent=n;b.onclick=()=>setF(i);$('tiles').appendChild(b)});
+function setF(i){fi=(i+FILTERS.length)%FILTERS.length;[...$('tiles').children].forEach((c,k)=>c.setAttribute('aria-pressed',k===fi))}setF(0);
+$('k').oninput=e=>{S.K=e.target.value/100;$('kv').textContent=fa(e.target.value)};
+[['#ffffff','سفید'],['#8f98f7','نیلی'],['#ffb454','کهربایی']].forEach(([c,n],i)=>{const b=document.createElement('button');b.style.background=c;b.setAttribute('aria-label',n);b.setAttribute('aria-pressed',i===0);b.onclick=()=>{S.col=c;[...$('sw').children].forEach(x=>x.setAttribute('aria-pressed',x===b))};$('sw').appendChild(b)});
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.p;document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===tab));if(tab==='p2')ensureFace()});
+const TG=[['skel','اسکلت دست','خطوط و مفصل‌های انگشتات روی تصویر'],['gest','عوض شدن با بستن قاب','قاب رو ببند و باز کن تا فیلتر بعدی بیاد'],['auto','چرخش خودکار فیلتر','هر چهار ثانیه یه فیلتر جدید'],['light','حالت سبک','اگه گوشی‌ت لگ می‌زنه روشنش کن'],['mirror','آینه‌ای','تصویر مثل آینه نشون داده می‌شه']],TB={};
+TG.forEach(([k,n,s])=>{const d=document.createElement('div');d.className='tg';d.innerHTML='<div>'+n+'<small>'+s+'</small></div>';const b=document.createElement('button');b.className='sw';b.setAttribute('aria-label',n);b.setAttribute('aria-pressed',S[k]);b.onclick=()=>setTg(k,!S[k]);d.appendChild(b);$('p3').appendChild(d);TB[k]=b});
+function setTg(k,v){S[k]=v;TB[k].setAttribute('aria-pressed',v);if(k==='light')sizeAll(video.videoWidth||640,video.videoHeight||480)}
+$('theme').onclick=()=>{const r=document.documentElement,d=(r.dataset.theme||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'))==='dark';r.dataset.theme=d?'light':'dark'};
 $('shot').onclick=()=>{$('mimg').src=cv.toDataURL('image/jpeg',.92);$('modal').style.display='flex'};
 $('mc').onclick=()=>$('modal').style.display='none';
 $('full').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():$('stage').requestFullscreen()}catch(e){}};
 $('flip').onclick=()=>{S.facing=S.facing==='user'?'environment':'user';setTg('mirror',S.facing==='user');startCam()};
-/* One Euro filter */
-function OE(mc=1.4,beta=.04){let p,dp=0,pt;return(x,t)=>{if(p===undefined){p=x;pt=t;return x}const dt=Math.max(.001,(t-pt)/1000);pt=t;const a=f=>1/(1+1/(6.2832*f*dt));dp+=a(1)*((x-p)/dt-dp);p+=a(mc+beta*Math.abs(dp))*(x-p);return p}}
+/* ---- smoothing ---- */
+function OE(m=1,b=.03){let p,dp=0,pt;return(x,t)=>{if(p===undefined){p=x;pt=t;return x}const dt=Math.max(.001,(t-pt)/1000);pt=t;const a=f=>1/(1+1/(6.2832*f*dt));dp+=a(1)*((x-p)/dt-dp);p+=a(m+b*Math.abs(dp))*(x-p);return p}}
 const mkSlot=()=>Array.from({length:21},()=>[OE(),OE()]);let slots=[mkSlot(),mkSlot()];
-const FF=Array.from({length:478},()=>[OE(2.5,.02),OE(2.5,.02)]);
-/* trackers */
+const FF=Array.from({length:478},()=>[OE(2,.02),OE(2,.02)]);
+/* ---- trackers: hands on GPU, face on CPU (separate, so they never fight over the GPU) ---- */
 const B='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14',G='https://storage.googleapis.com/mediapipe-models/';
 const to=(p,ms)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(0),ms))]);
-async function initTrackers(){
- const m=await to(import(B+'/vision_bundle.mjs'),15000),fs=await to(m.FilesetResolver.forVisionTasks(B+'/wasm'),20000);
- const mkL=async(C,url,o)=>{const f=d=>C.createFromOptions(fs,Object.assign({baseOptions:{modelAssetPath:url,delegate:d},runningMode:'VIDEO'},o));try{return await to(f('GPU'),30000)||f('CPU')}catch(e){return await to(f('CPU'),30000)}};
- lmH=await mkL(m.HandLandmarker,G+'hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',{numHands:2});
- say('آماده‌ایم! دستاتو بیار جلوی دوربین');
- mkL(m.FaceLandmarker,G+'face_landmarker/face_landmarker/float16/1/face_landmarker.task',{numFaces:1,outputFaceBlendshapes:true}).then(f=>lmF=f).catch(()=>{});
-}
-let tsH=0,tsF=0;
-const X=p=>S.mirror?(1-p.x)*W:p.x*W;
+const mkL=async(C,url,o,del)=>{const f=d=>C.createFromOptions(fset,Object.assign({baseOptions:{modelAssetPath:url,delegate:d},runningMode:'VIDEO'},o));if(del)return f(del);try{return await to(f('GPU'),30000)||f('CPU')}catch(e){return f('CPU')}};
+async function initHands(){mod=await to(import(B+'/vision_bundle.mjs'),15000);fset=await to(mod.FilesetResolver.forVisionTasks(B+'/wasm'),20000);
+ lmH=await mkL(mod.HandLandmarker,G+'hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',{numHands:2,minHandDetectionConfidence:.4,minHandPresenceConfidence:.4,minTrackingConfidence:.4})}
+async function ensureFace(){if(lmF||faceLoad||!fset)return;faceLoad=true;$('fst').textContent='دارم تحلیل صورت رو آماده می‌کنم، چند ثانیه صبر کن…';
+ try{lmF=await mkL(mod.FaceLandmarker,G+'face_landmarker/face_landmarker/float16/1/face_landmarker.task',{numFaces:1,outputFaceBlendshapes:true,outputFacialTransformationMatrixes:true},'CPU');$('fst').textContent='آماده‌ام. صورتت رو صاف بگیر و شروع رو بزن.'}catch(e){$('fst').textContent='تحلیل صورت بارگذاری نشد. صفحه رو دوباره باز کن.'}faceLoad=false}
+let tsH=0,tsF=0;const X=p=>S.mirror?(1-p.x)*W:p.x*W;
 function runHands(t){
  tsH=Math.max(tsH+1,t|0);let L;try{L=lmH.detectForVideo(video,tsH).landmarks}catch(e){return}
- if(!L.length){if(++lostH>6){hands=[];pts=null;slots=[mkSlot(),mkSlot()]}return}
- lostH=0;const hs=L.map(h=>({h,x:X(h[0])})).sort((a,b)=>a.x-b.x);
- hands=hs.map((o,s)=>o.h.map((p,k)=>[slots[s][k][0](X(p),t),slots[s][k][1](p.y*H,t)]));
- if(hands.length===2){const[a,b]=hands;pts=[a[8],b[8],b[4],a[4]]}else pts=null;
-}
-const M={},D={};
+ if(!L.length){noHand++;if(++lostH>12){hands=[];pts=null;slots=[mkSlot(),mkSlot()]}return}
+ lostH=0;noHand=0;let hs=L.map(h=>({h,x:X(h[0])})).sort((a,b)=>a.x-b.x);
+ const sl=hs.length===2?[0,1]:[hs[0].x<W/2?0:1];
+ hands=hs.map((o,i)=>o.h.map((p,k)=>[slots[sl[i]][k][0](X(p),t),slots[sl[i]][k][1](p.y*H,t)]));
+ if(hands.length===2){const[a,b]=hands;pts=[a[8],b[8],b[4],a[4]]}else pts=null}
+/* ---- face analysis ---- */
+const PAIRS=[[33,263],[133,362],[61,291],[234,454],[70,300],[105,334],[172,397],[98,327]],LIVE={};
+const sc2=(d,tol,id=0)=>Math.round(55+43*Math.exp(-.5*((d-id)/tol)**2)),cl=v=>Math.max(0,Math.min(100,v)),avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+let scanning=false,samples=[],prog=0;const NS=22;
+const LVR=[['چرخش سر','yaw'],['بالا و پایین','pit'],['کج بودن','rol'],['لبخند','sm'],['تعجب','sur'],['اخم','bw'],['چشم بسته','bk'],['دهن باز','jw']];
+LVR.forEach(([n,k])=>{const d=document.createElement('div');d.className='lv';d.innerHTML='<span>'+n+'</span><div class="track"><i></i></div><em>۰</em>';d.id='lv_'+k;$('live').appendChild(d)});
+const setLv=(k,v,mx)=>{const e=$('lv_'+k);e.children[1].firstChild.style.width=cl(v/mx*100)+'%';e.children[2].textContent=fa(Math.round(v))+(mx===90?'°':'٪')};
 function runFace(t){
  tsF=Math.max(tsF+1,t|0);let r;try{r=lmF.detectForVideo(video,tsF)}catch(e){return}
- if(!r.faceLandmarks.length){if(++lostF>4){fl=null}return}
+ if(!r.faceLandmarks.length){if(++lostF>4){fl=null;$('fst').textContent=scanning?'صورتت پیدا نمی‌شه، بیا جلوی دوربین.':$('fst').textContent}return}
  lostF=0;const L=r.faceLandmarks[0];fl=L.map((p,i)=>[FF[i][0](X(p),t),FF[i][1](p.y*H,t)]);
- analyze(L,r.faceBlendshapes&&r.faceBlendshapes[0]&&r.faceBlendshapes[0].categories)}
-const cl=v=>Math.max(0,Math.min(100,v));
-function analyze(L,bl){
- const P=i=>[L[i].x*W,L[i].y*H],d=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
- const top=P(10),ch=P(152),ax=[ch[0]-top[0],ch[1]-top[1]],al=Math.hypot(ax[0],ax[1]);
- const sd=p=>Math.abs(((p[0]-top[0])*ax[1]-(p[1]-top[1])*ax[0])/al);
- let as=0;[[33,263],[133,362],[61,291],[234,454],[70,300],[105,334],[172,397],[98,327]].forEach(([a,b])=>{const l=sd(P(a)),r=sd(P(b));as+=Math.abs(l-r)/(l+r+1e-6)});as/=8;
- const fw=d(P(234),P(454)),ratio=d(top,ch)/fw;
- const t1=d(top,P(9)),t2=d(P(9),P(2)),t3=d(P(2),ch),tt=t1+t2+t3,dev=Math.max(...[t1,t2,t3].map(v=>Math.abs(v/tt-1/3)));
- const ew=(d(P(33),P(133))+d(P(263),P(362)))/2,eg=d(P(133),P(362))/ew,mr=d(P(61),P(291))/d(P(129),P(358));
- const g=n=>bl?(bl.find(c=>c.categoryName===n)||{score:0}).score:0;
- const sm=(g('mouthSmileLeft')+g('mouthSmileRight'))/2,bk=(g('eyeBlinkLeft')+g('eyeBlinkRight'))/2,bw=(g('browDownLeft')+g('browDownRight'))/2,jw=g('jawOpen');
- const roll=Math.atan2(P(263)[1]-P(33)[1],P(263)[0]-P(33)[0])*57.3,yaw=(P(1)[0]-P(234)[0])/fw;
- let xs=L.map(p=>p.x*W),ys=L.map(p=>p.y*H);const x0=Math.min(...xs)|0,x1=Math.max(...xs)|0,y0=Math.min(...ys)|0,y1=Math.max(...ys)|0;
- lx.drawImage(video,0,0,48,36);const im=lx.getImageData(0,0,48,36).data;let lm_=0,rm=0,ln=0,rn=0;
- for(let y=Math.max(0,y0*36/H|0);y<Math.min(36,y1*36/H);y++)for(let x=Math.max(0,x0*48/W|0);x<Math.min(48,x1*48/W);x++){const i=(y*48+x)*4,v=.299*im[i]+.587*im[i+1]+.114*im[i+2];if(x*W/48<(x0+x1)/2){lm_+=v;ln++}else{rm+=v;rn++}}
- lm_/=ln||1;rm/=rn||1;const mean=(lm_+rm)/2,lr=Math.abs(lm_-rm);
- const cx=(x0+x1)/2/W,sz=(y1-y0)/H;
- const mood=bk>.5?'چشمات بسته‌ست':sm>.45?'لبخند':bw>.4?'اخم':jw>.35?'دهنت بازه':'آروم';
- const v={sym:100-as*260,prop:100-Math.abs(ratio-1.45)*130,thirds:100-dev*420,eyes:100-Math.abs(eg-1)*140,lips:100-Math.abs(mr-1.5)*55,mood:60+sm*40-bw*25-jw*15,pose:100-Math.abs(roll)*3-Math.abs(yaw-.5)*180,light:100-Math.abs(mean-135)*.7-lr*.5,frame:100-Math.abs(cx-.5)*170-Math.abs(sz-.55)*140};
- for(const k in v){const s=cl(v[k]);M[k]=M[k]==null?s:M[k]*.85+s*.15}
- D.prop=ratio<1.3?'گرد و پهن':ratio<1.55?'بیضی متعادل':'کشیده';D.mood=mood;D.eyes=eg<.85?'نزدیک':eg>1.2?'دور':'متعادل';D.light=mean<80?'تاریک':mean>190?'خیلی روشن':'خوب';D.pose=Math.abs(roll)>8?'سرت کجه':Math.abs(yaw-.5)>.12?'صورتت کج رو به یه سمته':'صاف'}
-const ROWS=[['sym','تقارن چهره',.2,['دو طرف صورتت تقریباً آینه‌ی همن','تقارنت خوبه و فقط یه اختلاف خیلی ریز داری','یه کم نامتقارنه؛ کج بودن سر هم اثر می‌ذاره']],
-['prop','فرم صورت',.15,['فرمت خیلی متعادله','نسبت طول به عرض صورتت خوبه','فرمت از حالت معمول یه کم فاصله داره، ولی این یعنی خاص بودن']],
-['thirds','سه‌قسمتی بودن',.15,['پیشونی، میانه و پایین صورت تقریباً مساوین','تناسب سه بخش صورتت خوبه','یکی از سه بخش صورتت یه کم بزرگ‌تر از بقیه‌ست']],
-['eyes','فاصله‌ی چشم‌ها',.1,['فاصله‌ی چشمات دقیقاً به اندازه‌ی یه چشمه','فاصله‌ی چشمات خوبه','فاصله‌ی چشمات از حالت میانگین یه کم فاصله داره']],
-['lips','لب و بینی',.1,['عرض دهنت با بینی‌ت هماهنگه','هماهنگی دهن و بینی خوبه','عرض دهنت نسبت به بینی یه کم فرق داره']],
-['mood','حالت چهره',.1,['انرژیت بالاست','حالتت دوستانه‌ست','یه کم خسته یا جدی به نظر می‌رسی']],
-['pose','حالت سر',.1,['سرت صاف و رو به دوربینه','حالت سرت خوبه','سرت یه کم کجه یا چرخیده']],
-['light','نور صورت',.05,['نورت عالیه و یکدسته','نورت خوبه','نورت کمه یا یه طرف صورتت تاریک‌تره، رو به نور بایست']],
-['frame','قاب‌بندی',.05,['وسط قاب و با اندازه‌ی مناسب','تقریباً وسط قابی','یه کم به وسط یا به دوربین نزدیک‌تر شو']]];
-const rowsEl=ROWS.map(r=>{const e=document.createElement('div');e.className='row';e.innerHTML='<div class="t"><span>'+r[1]+'</span><span>--</span></div><div class="bar"><i></i></div><p>-</p>';$('rows').appendChild(e);return e});
-function renderReport(){
- if(!fl||M.sym==null){$('big').textContent='--';$('verdict').textContent='منتظر صورتت هستم';return}
- let tot=0;const sc2=[];
- ROWS.forEach((r,i)=>{const s=Math.round(M[r[0]]);tot+=M[r[0]]*r[2];sc2.push([r[1],s]);const e=rowsEl[i];e.children[0].children[1].textContent=s;e.children[1].firstChild.style.width=s+'%';e.children[2].textContent=r[3][s>=80?0:s>=60?1:2]+(D[r[0]]&&['prop','mood','eyes','light','pose'].includes(r[0])?' ('+D[r[0]]+')':'')});
- tot=Math.round(tot);$('big').textContent=tot;$('arc').style.strokeDashoffset=327*(1-tot/100);
- $('verdict').textContent=tot>=85?'عالی هستی':tot>=72?'خیلی خوبی':tot>=58?'خوبی':'با یه نور و زاویه‌ی بهتر عالی می‌شی';
- sc2.sort((a,b)=>b[1]-a[1]);$('best').textContent='نقطه‌ی قوتت: '+sc2[0][0]+' ('+sc2[0][1]+')\nجای بهتر شدن: '+sc2[8][0]+' ('+sc2[8][1]+')';$('best').style.whiteSpace='pre-line'}
-/* rendering */
+ const bl=r.faceBlendshapes&&r.faceBlendshapes[0]&&r.faceBlendshapes[0].categories||[],g=n=>(bl.find(c=>c.categoryName===n)||{score:0}).score;
+ const mt=r.facialTransformationMatrixes&&r.facialTransformationMatrixes[0],P=i=>[L[i].x*W,L[i].y*H],d=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+ let yaw,pit,rol;if(mt){const m=mt.data;rol=Math.atan2(m[1],Math.abs(m[0]))*57.3;yaw=Math.asin(Math.max(-1,Math.min(1,-m[2])))*57.3;pit=Math.atan2(m[6],Math.abs(m[10]))*57.3}
+ else{rol=Math.atan2(P(263)[1]-P(33)[1],P(263)[0]-P(33)[0])*57.3;yaw=((P(1)[0]-P(234)[0])/d(P(234),P(454))-.5)*120;pit=0}
+ const v={yaw:Math.abs(yaw),pit:Math.abs(pit),rol:Math.abs(rol),sm:(g('mouthSmileLeft')+g('mouthSmileRight'))*50,bw:(g('browDownLeft')+g('browDownRight'))*50,bk:(g('eyeBlinkLeft')+g('eyeBlinkRight'))*50,jw:g('jawOpen')*100,sur:Math.max(g('browInnerUp'),(g('eyeWideLeft')+g('eyeWideRight'))/2)*100};
+ Object.assign(LIVE,v);
+ if(fn%3===0)for(const k in v)setLv(k,v[k],k==='yaw'||k==='pit'||k==='rol'?90:100);
+ if(!scanning)return;
+ if(v.yaw>13||v.pit>14||v.rol>15){$('fst').textContent='سرت رو صاف‌تر و رو به دوربین بگیر.';return}
+ samples.push(sampleFace(L,v,P,d));prog=samples.length/NS;$('prog').style.width=prog*100+'%';$('fst').textContent='در حال اسکن… ثابت بمون و پلک بزن، مشکلی نیست.';
+ if(samples.length>=NS){scanning=false;$('scan').textContent='اسکن دوباره';finishScan()}}
+function sampleFace(L,v,P,d){
+ const top=P(10),ch=P(152),ax=[ch[0]-top[0],ch[1]-top[1]],al=Math.hypot(ax[0],ax[1]),sd=p=>Math.abs(((p[0]-top[0])*ax[1]-(p[1]-top[1])*ax[0])/al);
+ let as=0;PAIRS.forEach(([a,b])=>{const l=sd(P(a)),r=sd(P(b));as+=Math.abs(l-r)/(l+r+1e-6)});as/=PAIRS.length;
+ const fw=d(P(234),P(454)),ew=(d(P(33),P(133))+d(P(263),P(362)))/2;
+ lx.drawImage(video,0,0,W,H);
+ const pa=(x,y,r)=>{x=Math.max(r,Math.min(W-r-1,x|0));y=Math.max(r,Math.min(H-r-1,y|0));const q=lx.getImageData(x-r,y-r,2*r+1,2*r+1).data;let R=0,Gc=0,Bc=0,n=0;for(let i=0;i<q.length;i+=4){const l=.299*q[i]+.587*q[i+1]+.114*q[i+2];if(l>25&&l<225){R+=q[i];Gc+=q[i+1];Bc+=q[i+2];n++}}return n?[R/n,Gc/n,Bc/n,1]:[0,0,0,0]};
+ const pp=[P(50),P(280),P(151)].map(p=>pa(p[0],p[1],7)),lu=c=>.299*c[0]+.587*c[1]+.114*c[2],ls=pp.map(lu),mean=avg(ls),sk=[0,1,2].map(i=>avg(pp.map(c=>c[i])));
+ let ir=[0,0,0],n=0;[468,473].forEach(i=>{const c=P(i),r=avg([1,2,3,4].map(k=>d(c,P(i+k))));for(let a=0;a<8;a++){const q=pa(c[0]+Math.cos(a*.785)*r*.55,c[1]+Math.sin(a*.785)*r*.55,2);if(q[3]){ir=ir.map((x,j)=>x+q[j]);n++}}});ir=ir.map(x=>n?x/n:60);
+ return{asym:as,lw:d(top,ch)/fw,jaw:d(P(172),P(397))/fw,fore:d(P(54),P(284))/fw,eg:d(P(133),P(362))/ew,tilt:(Math.atan2(P(133)[1]-P(33)[1],Math.abs(P(133)[0]-P(33)[0]))+Math.atan2(P(362)[1]-P(263)[1],Math.abs(P(362)[0]-P(263)[0])))/2*57.3,
+ open:(d(P(159),P(145))/d(P(33),P(133))+d(P(386),P(374))/d(P(263),P(362)))/2,nose:d(P(129),P(358))/d(P(133),P(362)),mouth:d(P(61),P(291))/d(P(129),P(358)),lip:d(P(14),P(17))/d(P(0),P(13)),
+ third:d(P(9),P(2))/d(P(2),ch),phil:d(P(2),P(13))/d(P(2),ch),sm:v.sm,bw:v.bw,lum:mean,lrd:Math.abs(ls[0]-ls[1])/mean,cvs:Math.sqrt(avg(ls.map(x=>(x-mean)**2)))/mean,sr:sk[0],sg:sk[1],sb:sk[2],ir:ir[0],ig:ir[1],ib:ir[2]}}
+$('scan').onclick=()=>{if(!lmF){ensureFace();return}scanning=true;samples=[];prog=0;$('prog').style.width='0';$('rep').hidden=true;$('scan').textContent='در حال اسکن…'};
+function hsv(r,g,b){r/=255;g/=255;b/=255;const m=Math.max(r,g,b),n=Math.min(r,g,b),d=m-n;let h=0;if(d){h=m===r?((g-b)/d)%6:m===g?(b-r)/d+2:(r-g)/d+4;h=(h*60+360)%360}return[h,m?d/m:0,m]}
+const hex=(r,g,b)=>'#'+[r,g,b].map(x=>Math.round(Math.max(0,Math.min(255,x))).toString(16).padStart(2,'0')).join('');
+function finishScan(){
+ const med=k=>{const a=samples.map(s=>s[k]).sort((x,y)=>x-y);return a[a.length>>1]},m={};Object.keys(samples[0]).forEach(k=>m[k]=med(k));
+ const C={sym:sc2(m.asym,.07),prop:Math.round(avg([sc2(m.lw,.25,1.3),sc2(m.jaw,.15,.75),sc2(m.third,.25,1)])),eyes:Math.round(avg([sc2(m.eg,.22,1),sc2(m.tilt,6,5),sc2(m.open,.1,.32)])),nose:sc2(m.nose,.25,1),lips:Math.round(avg([sc2(m.mouth,.35,1.5),sc2(m.lip,.6,1.4),sc2(m.phil,.08,.33)])),skin:sc2(m.cvs,.12),mood:Math.round(cl(72+m.sm*.3-m.bw*.25))};
+ const acc=Math.round(avg([sc2(m.lum,55,140),sc2(m.lrd,.18)])),ov=Math.round(avg(Object.values(C)));
+ const N=[['sym','تقارن چهره',['دو طرف صورتت تقریباً آینه‌ی همن، تقارن عالیه','تقارنت خوبه و فقط یه اختلاف خیلی ریز بین دو طرف هست','یه کم نامتقارنه، که کاملاً طبیعیه و بیشتر از چیزی که فکر می‌کنی تو همه هست']],
+ ['prop','تناسب کلی',['نسبت طول و عرض صورت و فکت خیلی هماهنگه','تناسب کلی صورتت خوبه','تناسب صورتت از حالت میانگین یه کم فاصله داره و این بهش شخصیت می‌ده']],
+ ['eyes','چشم‌ها',['فاصله، کشیدگی و بازشدگی چشمات هماهنگه','چشمات تناسب خوبی دارن','چشمات از الگوی رایج یه کم فرق دارن و این یعنی چشمات خاصن']],
+ ['nose','بینی',['عرض بینی‌ت با فاصله‌ی چشمات هماهنگه','بینی‌ت تناسب خوبی با چشمات داره','عرض بینی‌ت با فاصله‌ی چشمات یه کم فرق داره']],
+ ['lips','لب و دهن',['عرض و حجم لبت با بینی و صورتت هماهنگه','لبات تناسب خوبی دارن','لبات از الگوی رایج یه کم فرق دارن']],
+ ['skin','یکدستی پوست',['رنگ پوستت تو سه ناحیه خیلی یکدسته','رنگ پوستت تقریباً یکدسته','بین پیشونی و گونه‌هات اختلاف رنگ یا نور هست، شاید به خاطر نور محیط باشه']],
+ ['mood','حالت و انرژی',['چهره‌ت شاد و پرانرژیه','حالت چهره‌ت آروم و دوستانه‌ست','جدی یا خسته به نظر می‌رسی، یه لبخند همه‌چی رو عوض می‌کنه']]];
+ $('ov').textContent=fa(ov);$('vd').textContent=ov>=90?'ترکیب چهره‌ت خیلی هماهنگه':ov>=82?'نسبت‌های چهره‌ت خیلی خوبه':ov>=72?'نسبت‌های چهره‌ت خوبه':'چهره‌ت ویژگی‌های خاص و منحصربه‌فرد داره';
+ const T={sym:m.asym<.04?'خیلی کم':m.asym<.08?'کم':'قابل‌توجه'};
+ $('cats').innerHTML=N.map(([k,n,t])=>'<div class="row"><div class="t"><b>'+fa(C[k])+'</b><span>'+n+'</span></div><div class="track"><i style="width:'+C[k]+'%"></i></div><p>'+t[C[k]>=85?0:C[k]>=72?1:2]+'</p></div>').join('');
+ const so=[...N].sort((a,b)=>C[b[0]]-C[a[0]]);
+ $('tips').textContent='قوی‌ترین بخشت: '+so[0][1]+'. '+(C[so[6][0]]<85?'بخشی که بیشتر جا برای بهتر شدن داره: '+so[6][1]+'. ':'')+(acc<75?'دقت اسکن '+fa(acc)+' درصد بود. برای نتیجه‌ی دقیق‌تر رو به نور بایست و سرت رو صاف نگه دار.':'دقت اسکن '+fa(acc)+' درصد بود و نور و زاویه خوب بودن.');
+ const shape=m.lw>1.4?'کشیده':m.lw<1.18&&m.jaw<.8?'گرد':m.jaw>.82?'مربعی':m.fore>.95&&m.jaw<.68?'قلبی':m.fore<.82&&m.jaw<.72?'الماسی':'بیضی',[h,s,v]=hsv(m.ir,m.ig,m.ib);
+ const eyeC=v<.22?'مشکی':s<.18?'خاکستری':h>190&&h<260?'آبی':h>75&&h<=190?'سبز':h>35&&h<=75&&s>.35?'عسلی':v<.4?'قهوه‌ای تیره':'قهوه‌ای روشن',Y=.299*m.sr+.587*m.sg+.114*m.sb,skinN=Y>200?'خیلی روشن':Y>170?'روشن':Y>135?'گندمی':Y>100?'برنزه':'تیره';
+ const F=[['شکل صورت',shape],['شکل چشم',m.open>.38?'گرد و درشت':m.open>.28?'بادامی':'کشیده و ریز'],['کشیدگی گوشه‌ی چشم',m.tilt>6?'رو به بالا':m.tilt>2?'کمی رو به بالا':m.tilt>-2?'صاف':'رو به پایین'],['فاصله‌ی چشم‌ها',m.eg<.88?'نزدیک':m.eg>1.15?'دور':'متعادل'],['عرض بینی',m.nose<.9?'باریک':m.nose>1.15?'پهن':'متعادل'],['حجم لب',m.lip<1.1?'لب بالا پرتر':m.lip>1.9?'لب پایین پرتر':'متعادل'],['فک و چانه',m.jaw>.82?'مربعی و قوی':m.jaw<.66?'باریک و نوک‌دار':'متعادل'],['حس چهره',m.sm>35?'شاد':m.bw>25?'جدی':'آروم'],
+ ['رنگ پوست (تقریبی)','<span class="dot" style="background:'+hex(m.sr,m.sg,m.sb)+'"></span>'+skinN],['رنگ چشم (تقریبی)','<span class="dot" style="background:'+hex(m.ir,m.ig,m.ib)+'"></span>'+eyeC]];
+ $('facts').innerHTML=F.map(([a,b])=>'<div><span>'+a+'</span><b>'+b+'</b></div>').join('');
+ $('rep').hidden=false;$('fst').textContent='اسکن تموم شد. نتیجه رو پایین‌تر ببین.';$('rep').scrollIntoView({behavior:'smooth',block:'start'})}
+/* ---- rendering ---- */
 const lum=(d,i)=>(.299*d[i]+.587*d[i+1]+.114*d[i+2])/255,lerp=(a,b,t)=>a+(b-a)*t;
 function drawSource(t){
- if(mode==='demo'){const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#1d2b33');g.addColorStop(1,'#6b5a8a');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);const c=W/2+Math.sin(t/900)*W*.12;ctx.fillStyle='#f3d9b8';ctx.beginPath();ctx.arc(c,H*.45,H*.19,0,7);ctx.fill();return}
+ if(mode==='demo'){const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#16161d');g.addColorStop(1,'#4650c8');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);return}
  if(S.mirror){ctx.save();ctx.translate(W,0);ctx.scale(-1,1);ctx.drawImage(video,0,0,W,H);ctx.restore()}else ctx.drawImage(video,0,0,W,H)}
 function sample(){if(S.mirror){sx.save();sx.translate(SW,0);sx.scale(-1,1);sx.drawImage(mode==='cam'?video:cv,0,0,SW,SH);sx.restore()}else sx.drawImage(mode==='cam'?video:cv,0,0,SW,SH);return sx.getImageData(0,0,SW,SH)}
 function px2(im,fn){const d=im.data;for(let i=0;i<d.length;i+=4){const o=fn(d,i);d[i]=o[0];d[i+1]=o[1];d[i+2]=o[2]}mx.putImageData(im,0,0);ctx.imageSmoothingEnabled=true;ctx.drawImage(mc,0,0,W,H)}
 function ramp(s,t){const n=s.length-1,p=Math.min(.999,t)*n,i=p|0,f=p-i;return s[i].map((v,k)=>lerp(v,s[i+1][k],f))}
-function dots(d,bg,fg,black,b){
- ctx.fillStyle=bg;ctx.fillRect(b.x,b.y,b.w,b.h);const cw=W/SW,ch=H/SH,N=5,ps=Array.from({length:N},()=>new Path2D());
- for(let y=Math.max(0,b.y/ch|0);y<Math.min(SH,(b.y+b.h)/ch+1);y++)for(let x=Math.max(0,b.x/cw|0);x<Math.min(SW,(b.x+b.w)/cw+1);x++){
-  const l=lum(d,(y*SW+x)*4),v=black?l:1-l,k=Math.min(N-1,v*N|0),r=(k+.6)/N*cw*(.55+.55*S.K),cx=(x+.5)*cw,cy=(y+.5)*ch;ps[k].moveTo(cx+r,cy);ps[k].arc(cx,cy,r,0,6.283)}
+function dots(d,bg,fg,black,b){ctx.fillStyle=bg;ctx.fillRect(b.x,b.y,b.w,b.h);const cw=W/SW,ch=H/SH,N=5,ps=Array.from({length:N},()=>new Path2D());
+ for(let y=Math.max(0,b.y/ch|0);y<Math.min(SH,(b.y+b.h)/ch+1);y++)for(let x=Math.max(0,b.x/cw|0);x<Math.min(SW,(b.x+b.w)/cw+1);x++){const l=lum(d,(y*SW+x)*4),v=black?l:1-l,k=Math.min(N-1,v*N|0),r=(k+.6)/N*cw*(.55+.55*S.K),cx=(x+.5)*cw,cy=(y+.5)*ch;ps[k].moveTo(cx+r,cy);ps[k].arc(cx,cy,r,0,6.283)}
  ctx.fillStyle=fg;ps.forEach(p=>ctx.fill(p))}
-function renderFilter(b){
- const K=S.K;
+function renderFilter(b){const K=S.K;
  if(fi===1){ctx.strokeStyle='#fffc';ctx.lineWidth=1;ctx.beginPath();const s=W/(22+K*30);for(let x=0;x<=W;x+=s){ctx.moveTo(x,b.y);ctx.lineTo(x,b.y+b.h)}for(let y=0;y<=H;y+=s){ctx.moveTo(b.x,y);ctx.lineTo(b.x+b.w,y)}ctx.stroke();return}
  if(fi===10){ctx.globalCompositeOperation='difference';ctx.fillStyle='#fff';ctx.fillRect(b.x,b.y,b.w,b.h);ctx.globalCompositeOperation='source-over';return}
  if(fi===4){const o=W/220*(1+K*6);ctx.globalCompositeOperation='lighter';['#f00','#0f0','#00f'].forEach((c,k)=>{tx.globalCompositeOperation='source-over';tx.clearRect(b.x,b.y,b.w,b.h);tx.drawImage(cv,b.x,b.y,b.w,b.h,b.x,b.y,b.w,b.h);tx.globalCompositeOperation='multiply';tx.fillStyle=c;tx.fillRect(b.x,b.y,b.w,b.h);ctx.drawImage(tmp,b.x,b.y,b.w,b.h,b.x+(k-1)*o,b.y,b.w,b.h)});ctx.globalCompositeOperation='source-over';return}
@@ -205,66 +217,53 @@ function renderFilter(b){
  case 2:px2(im,(d,i)=>{const l=lum(d,i);return l<.28?[20,10,30]:l<.55?[255,45,125]:[255,150,20]});break;
  case 5:px2(im,(d,i)=>ramp([[20,30,200],[0,170,255],[40,230,120],[255,230,40],[255,120,20]],lum(d,i)));break;
  case 6:px2(im,(d,i)=>{const l=lum(d,i)*255;return[Math.min(255,l*1.1+30),l*.85+20,l*.6]});break;
- case 7:ctx.imageSmoothingEnabled=true;ctx.drawImage(sc,0,0,W,H);ctx.fillStyle='rgba(255,255,255,'+(.2+K*.4)+')';ctx.fillRect(b.x,b.y,b.w,b.h);break
+ case 7:ctx.imageSmoothingEnabled=true;ctx.drawImage(sc,0,0,W,H);ctx.fillStyle='rgba(255,255,255,'+(.2+K*.4)+')';ctx.fillRect(b.x,b.y,b.w,b.h);break;
  case 8:{const L=new Float32Array(SW*SH);for(let i=0;i<L.length;i++)L[i]=lum(d,i*4);for(let y=1;y<SH-1;y++)for(let x=1;x<SW-1;x++){const i=y*SW+x,e=Math.min(1,Math.hypot(L[i+1]-L[i-1],L[i+SW]-L[i-SW])*(2+K*5)),o=i*4;d[o]=12+e*255;d[o+1]=8+e*70;d[o+2]=30+e*230}mx.putImageData(im,0,0);ctx.imageSmoothingEnabled=true;ctx.drawImage(mc,0,0,W,H);break}
  case 9:{const n=Math.round(10+(1-K)*50);pc.width=n;pc.height=Math.max(2,Math.round(n*H/W));px.drawImage(sc,0,0,n,pc.height);ctx.imageSmoothingEnabled=false;ctx.drawImage(pc,0,0,W,H);ctx.imageSmoothingEnabled=true;break}
- case 11:px2(im,(d,i)=>{const l=Math.max(0,Math.min(255,(lum(d,i)-.5)*(1.3+K)*255+128));return[l,l,l]});break}
-}
+ case 11:px2(im,(d,i)=>{const l=Math.max(0,Math.min(255,(lum(d,i)-.5)*(1.3+K)*255+128));return[l,l,l]});break}}
 const area=p=>{let a=0;for(let i=0;i<4;i++){const[x1,y1]=p[i],[x2,y2]=p[(i+1)%4];a+=x1*y2-x2*y1}return Math.abs(a)/2};
-const BONES=[[0,1,2,3,4],[0,5,6,7,8],[9,10,11,12],[13,14,15,16],[0,17,18,19,20]],FC=['#ff9a3d','#ff5d8f','#ffd23f','#5ff0b0','#5cc0ff'];
-function drawHand(h){
- ctx.lineCap=ctx.lineJoin='round';ctx.fillStyle='#ffffff1a';ctx.beginPath();[0,1,5,9,13,17].forEach((k,i)=>i?ctx.lineTo(h[k][0],h[k][1]):ctx.moveTo(h[k][0],h[k][1]));ctx.closePath();ctx.fill();
- ctx.strokeStyle='#fff8';ctx.lineWidth=2;ctx.beginPath();[5,9,13,17].forEach((k,i)=>i?ctx.lineTo(h[k][0],h[k][1]):ctx.moveTo(h[k][0],h[k][1]));ctx.stroke();
- BONES.forEach((c,f)=>{ctx.strokeStyle=FC[f===2?2:f===3?3:f===4?4:f];ctx.lineWidth=4;ctx.beginPath();c.forEach((k,i)=>i?ctx.lineTo(h[k][0],h[k][1]):ctx.moveTo(h[k][0],h[k][1]));ctx.stroke()});
- ctx.fillStyle='#fff';h.forEach((p,k)=>{ctx.beginPath();ctx.arc(p[0],p[1],k&&k%4===0?5.5:3.5,0,7);ctx.fill()});
- ctx.strokeStyle='#fff';ctx.lineWidth=2;[4,8].forEach(k=>{ctx.beginPath();ctx.arc(h[k][0],h[k][1],12,0,7);ctx.stroke()})}
-function drawFace(){
- const f=i=>fl[i],xs=[234,454,10,152].map(i=>f(i));const x0=Math.min(f(234)[0],f(454)[0])-8,x1=Math.max(f(234)[0],f(454)[0])+8,y0=f(10)[1]-8,y1=f(152)[1]+8,c=22;
- ctx.strokeStyle='#ffffffe0';ctx.lineWidth=3;ctx.beginPath();[[x0,y0,1,1],[x1,y0,-1,1],[x0,y1,1,-1],[x1,y1,-1,-1]].forEach(([x,y,a,b])=>{ctx.moveTo(x+a*c,y);ctx.lineTo(x,y);ctx.lineTo(x,y+b*c)});ctx.stroke();
- ctx.strokeStyle='#b9a7ffcc';ctx.lineWidth=1.5;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(f(10)[0],f(10)[1]);ctx.lineTo(f(152)[0],f(152)[1]);[9,2].forEach(i=>{ctx.moveTo(f(234)[0],f(i)[1]);ctx.lineTo(f(454)[0],f(i)[1])});ctx.stroke();ctx.setLineDash([]);
- ctx.strokeStyle='#ffc6a5';ctx.lineWidth=2;ctx.beginPath();[[33,133],[362,263],[61,291]].forEach(([a,b])=>{ctx.moveTo(f(a)[0],f(a)[1]);ctx.lineTo(f(b)[0],f(b)[1])});ctx.stroke();
- ctx.fillStyle='#fff';[33,133,362,263,1,61,291,10,152].forEach(i=>{ctx.beginPath();ctx.arc(f(i)[0],f(i)[1],3,0,7);ctx.fill()})}
+const BONES=[[0,1,2,3,4],[0,5,6,7,8],[9,10,11,12],[13,14,15,16],[0,17,18,19,20]];
+function drawHand(h){ctx.lineCap=ctx.lineJoin='round';
+ ctx.fillStyle='#ffffff22';ctx.beginPath();[0,1,5,9,13,17].forEach((k,i)=>i?ctx.lineTo(h[k][0],h[k][1]):ctx.moveTo(h[k][0],h[k][1]));ctx.closePath();ctx.fill();
+ ctx.strokeStyle='#fff';ctx.lineWidth=3;BONES.forEach(c=>{ctx.beginPath();c.forEach((k,i)=>i?ctx.lineTo(h[k][0],h[k][1]):ctx.moveTo(h[k][0],h[k][1]));ctx.stroke()});
+ ctx.beginPath();[5,9,13,17].forEach((k,i)=>i?ctx.lineTo(h[k][0],h[k][1]):ctx.moveTo(h[k][0],h[k][1]));ctx.stroke();
+ h.forEach((p,k)=>{const tip=k>0&&k%4===0;ctx.fillStyle=tip?'#ffb454':'#8f98f7';ctx.beginPath();ctx.arc(p[0],p[1],tip?6:4,0,7);ctx.fill()});
+ ctx.strokeStyle='#ffb454';ctx.lineWidth=2;[4,8].forEach(k=>{ctx.beginPath();ctx.arc(h[k][0],h[k][1],13,0,7);ctx.stroke()})}
+function drawFace(){const f=i=>fl[i],x0=Math.min(f(234)[0],f(454)[0])-8,x1=Math.max(f(234)[0],f(454)[0])+8,y0=f(10)[1]-8,y1=f(152)[1]+8,c=24;
+ ctx.strokeStyle='#ffb454';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();[[x0,y0,1,1],[x1,y0,-1,1],[x0,y1,1,-1],[x1,y1,-1,-1]].forEach(([x,y,a,b])=>{ctx.moveTo(x+a*c,y);ctx.lineTo(x,y);ctx.lineTo(x,y+b*c)});ctx.stroke();
+ ctx.strokeStyle='#ffffffb0';ctx.lineWidth=1.5;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(f(10)[0],f(10)[1]);ctx.lineTo(f(152)[0],f(152)[1]);[9,2].forEach(i=>{ctx.moveTo(f(234)[0],f(i)[1]);ctx.lineTo(f(454)[0],f(i)[1])});ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle='#8f98f7';[33,133,362,263,1,61,291,468,473].forEach(i=>{ctx.beginPath();ctx.arc(f(i)[0],f(i)[1],3.5,0,7);ctx.fill()})}
 const path=p=>{ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);for(let i=1;i<4;i++)ctx.lineTo(p[i][0],p[i][1]);ctx.closePath()};
-let ft=0,fn=0,slow=0,rt=0;
+let ft=0,slow=0;
 function loop(t){
  requestAnimationFrame(loop);
  if(mode==='cam'){if(video.readyState<2||video.currentTime===lastT)return;lastT=video.currentTime}
  const dt=t-ft;ft=t;fn++;
- if(dt>0&&dt<500){const f=1000/dt;slow=f<22?slow+1:Math.max(0,slow-1);if(fn%15===0)$('fps').textContent=Math.round(f)+' fps';if(slow>90&&!S.light){setTg('light',true);sizeAll(video.videoWidth||640,video.videoHeight||480);slow=0;say('حالت سبک روشن شد تا لگ نکنه')}}
+ if(dt>0&&dt<500){const f=1000/dt;slow=f<22?slow+1:Math.max(0,slow-1);if(fn%20===0){fps=Math.round(f);paint()}if(slow>90&&!S.light){setTg('light',true);slow=0;say('حالت سبک خودش روشن شد تا لگ نکنه')}}
  drawSource(t);
- const fs=S.light?8:5;
- if(lmF&&S.face&&fn%fs===0)runFace(t);else if(lmH&&(!S.light||fn%2===0))runHands(t);
- if(!S.face&&fl)fl=null;
+ const faceTab=lmF&&tab==='p2';
+ if(faceTab&&fn%(scanning?5:4)===0)runFace(t);else if(lmH&&(!S.light||fn%2===0))runHands(t);
+ if(tab!=='p2')fl=null;
  const p=pts||(lmH?null:quad);
- if(p){
-  const r=area(p)/(W*H);
+ if(p){const r=area(p)/(W*H);
   if(S.gest){if(r<.008)coll=true;else if(coll&&r>.03){coll=false;if(t-lastSw>700){lastSw=t;setF(fi+1)}}}
   if(S.auto&&t-lastSw>4000){lastSw=t;setF(fi+1)}
   if(r>.002){let x0=W,y0=H,x1=0,y1=0;p.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});x0=Math.max(0,x0|0);y0=Math.max(0,y0|0);x1=Math.min(W,Math.ceil(x1));y1=Math.min(H,Math.ceil(y1));
    if(x1>x0&&y1>y0){ctx.save();path(p);ctx.clip();renderFilter({x:x0,y:y0,w:x1-x0,h:y1-y0});ctx.restore()}
-   ctx.lineJoin='round';path(p);ctx.strokeStyle=S.col+'55';ctx.lineWidth=9;ctx.stroke();ctx.strokeStyle=S.col;ctx.lineWidth=2.5;ctx.stroke();ctx.fillStyle=S.col;p.forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,5,0,7);ctx.fill()})}
- }
- if(!lmH)quad.forEach(([x,y])=>{ctx.fillStyle='#fff';ctx.strokeStyle='#b9a7ff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,12,0,7);ctx.fill();ctx.stroke()});
- if(S.face&&fl)drawFace();
- if(S.skel)hands.forEach(drawHand);
- if(t-rt>500){rt=t;if($('p2').classList.contains('on'))renderReport()}
- if(lmH){say(hands.length===2?'قاب فعاله':hands.length===1?'دست دومتم بیار':'دستاتو بیار جلوی دوربین')}
-}
+   ctx.lineJoin='round';path(p);ctx.strokeStyle=S.col;ctx.lineWidth=3;ctx.stroke();ctx.fillStyle=S.col;p.forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,5,0,7);ctx.fill()})}}
+ if(!lmH)quad.forEach(([x,y])=>{ctx.fillStyle='#fff';ctx.strokeStyle='#8f98f7';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,12,0,7);ctx.fill();ctx.stroke()});
+ if(fl)drawFace();if(S.skel)hands.forEach(drawHand);
+ if(lmH&&fn%10===0){const s=hands.length===2?'قاب فعاله':hands.length===1?'دست دومت رو هم بیار':noHand>150?'دستات پیدا نمی‌شن، نیم متر عقب‌تر برو و نور رو بیشتر کن':'دستات رو باز جلوی دوربین بگیر';if(s!==msg.split(' · ')[0]){msg=s;paint()}}}
 const pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]};
 cv.addEventListener('pointerdown',e=>{if(lmH)return;const[x,y]=pos(e);let best=-1,bd=2500;quad.forEach((q,i)=>{const dd=(q[0]-x)**2+(q[1]-y)**2;if(dd<bd){bd=dd;best=i}});drag=best;if(best>=0)cv.setPointerCapture(e.pointerId)});
 cv.addEventListener('pointermove',e=>{if(drag>=0)quad[drag]=pos(e)});cv.addEventListener('pointerup',()=>drag=-1);
-async function startCam(){
- try{
-  if(stream)stream.getTracks().forEach(t=>t.stop());
-  stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:S.facing,width:{ideal:640},height:{ideal:480},frameRate:{ideal:30,max:30}}});
-  video.srcObject=stream;await video.play();sizeAll(video.videoWidth||640,video.videoHeight||480);mode='cam';$('go').style.display='none';lastT=-1;return true
+async function startCam(){try{if(stream)stream.getTracks().forEach(t=>t.stop());
+ stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:S.facing,width:{ideal:640},height:{ideal:480},frameRate:{ideal:30,max:30}}});
+ video.srcObject=stream;await video.play();sizeAll(video.videoWidth||640,video.videoHeight||480);mode='cam';$('go').style.display='none';lastT=-1;return true
  }catch(e){$('go').style.display='grid';say('اجازه‌ی دوربین رو بده');return false}}
 $('goBtn').onclick=boot;
-async function boot(){
- say('دوربین داره روشن می‌شه…');if(!await startCam())return;
- if(lmH)return;say('دارم ردیاب دست و صورت رو بارگذاری می‌کنم، بار اول چند ثانیه طول می‌کشه');
- try{await initTrackers()}catch(e){lmH=null;say('ردیاب بارگذاری نشد، فعلاً گوشه‌های قاب رو با انگشت بکش')}
-}
+async function boot(){say('دوربین داره روشن می‌شه…');if(!await startCam())return;if(lmH)return;say('دارم ردیاب دست رو بارگذاری می‌کنم، بار اول چند ثانیه طول می‌کشه');
+ try{await initHands();say('دستات رو باز جلوی دوربین بگیر')}catch(e){lmH=null;say('ردیاب بارگذاری نشد، فعلاً گوشه‌های قاب رو با انگشت بکش')}}
 requestAnimationFrame(loop);boot();
 </script>
 </body>
