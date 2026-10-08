@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>قاب فیلتر دستی</title>
+<style>
+:root{--bg:#f2efe9;--ink:#1b1a22;--acc:#e5246b;--acc2:#ff8a1f;--card:#fff;--line:#d9d4ca;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15131b;--ink:#f1eee8;--card:#201d29;--line:#37323f}}
+:root[data-theme="dark"]{--bg:#15131b;--ink:#f1eee8;--card:#201d29;--line:#37323f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px}
+h1{font-size:1.25rem;margin:4px 0 0;font-weight:800}
+#stage{position:relative;width:100%;max-width:640px;aspect-ratio:4/3;background:#000;border-radius:14px;overflow:hidden;touch-action:none}
+canvas{width:100%;height:100%;display:block}
+#status{font-size:.85rem;opacity:.8;text-align:center;max-width:640px;min-height:1.3em}
+.row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:640px}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer}
+button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+#start{background:var(--ink);color:var(--bg);font-weight:700}
+#name{position:absolute;top:10px;inset-inline-start:12px;background:rgba(0,0,0,.55);color:#fff;padding:4px 12px;border-radius:999px;font-size:.85rem;pointer-events:none}
+</style>
+</head>
+<body>
+<h1>قاب فیلتر دستی</h1>
+<div id="stage"><canvas id="cv" width="640" height="480"></canvas><div id="name"></div></div>
+<div id="status">دوربین را روشن کنید و با دو دست یک قاب بسازید.</div>
+<div class="row"><button id="start">روشن کردن دوربین</button><button id="next">فیلتر بعدی</button></div>
+<div class="row" id="chips"></div>
+
+<script>
+const W=640,H=480,cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const stat=t=>document.getElementById('status').textContent=t;
+const FILTERS=['نقطه‌چین قرمز','شبکه','پاپ‌آرت','نقطه‌چین سیاه‌سفید','جدا شدن رنگ','حرارتی','سپیا','شیشه‌ی مات'];
+let fi=0,mode='demo',video=document.createElement('video'),pts=null,lastArea=1,collapsed=false;
+video.playsInline=true;video.muted=true;
+// small sampler
+const SW=96,SH=72,sc=document.createElement('canvas');sc.width=SW;sc.height=SH;
+const sx=sc.getContext('2d',{willReadFrequently:true});
+const mc=document.createElement('canvas');mc.width=SW;mc.height=SH;const mx=mc.getContext('2d');
+// quad: 4 handles (fallback / manual)
+let quad=[[200,150],[440,150],[440,330],[200,330]],drag=-1;
+const chips=document.getElementById('chips');
+FILTERS.forEach((n,i)=>{const b=document.createElement('button');b.textContent=n;b.onclick=()=>setF(i);chips.appendChild(b)});
+function setF(i){fi=((i%FILTERS.length)+FILTERS.length)%FILTERS.length;[...chips.children].forEach((c,k)=>c.classList.toggle('on',k===fi));document.getElementById('name').textContent=FILTERS[fi]}
+setF(0);document.getElementById('next').onclick=()=>setF(fi+1);
+
+function drawSource(t){
+  ctx.save();
+  if(mode==='demo'){
+    const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,'#3a2d4f');g.addColorStop(1,'#c9894a');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#f3d9b8';ctx.beginPath();ctx.arc(W/2+Math.sin(t/900)*80,H/2-20,90,0,7);ctx.fill();
+    ctx.fillStyle='#1b1a22';ctx.beginPath();ctx.arc(W/2-30+Math.sin(t/900)*80,H/2-40,9,0,7);ctx.arc(W/2+30+Math.sin(t/900)*80,H/2-40,9,0,7);ctx.fill();
+    ctx.fillRect(W/2-35+Math.sin(t/900)*80,H/2+10,70,8);
+  }else{ctx.translate(W,0);ctx.scale(-1,1);ctx.drawImage(video,0,0,W,H)}
+  ctx.restore();
+}
+function lum(d,i){return(0.299*d[i]+0.587*d[i+1]+0.114*d[i+2])/255}
+function pixelFilter(fn){
+  const im=sx.getImageData(0,0,SW,SH),d=im.data;
+  for(let i=0;i<d.length;i+=4){const o=fn(d,i);d[i]=o[0];d[i+1]=o[1];d[i+2]=o[2]}
+  mx.putImageData(im,0,0);
+}
+function dots(d,bg,fg,black){
+  const cw=W/SW,ch=H/SH;ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);ctx.fillStyle=fg;
+  for(let y=0;y<SH;y++)for(let x=0;x<SW;x++){
+    const l=lum(d,(y*SW+x)*4),r=(black?l:1-l)*cw*0.62+0.2;
+    ctx.beginPath();ctx.arc((x+.5)*cw,(y+.5)*ch,r,0,7);ctx.fill()}
+}
+function lerp(a,b,t){return a+(b-a)*t}
+function ramp(stops,t){const n=stops.length-1,p=Math.min(.999,t)*n,i=Math.floor(p),f=p-i;
+  return stops[i].map((v,k)=>lerp(v,stops[i+1][k],f))}
+function renderFilter(){
+  sx.setTransform(1,0,0,1,0,0);sx.drawImage(cv,0,0,SW,SH); // grabs unfiltered frame
+  const d=sx.getImageData(0,0,SW,SH).data;
+  switch(fi){
+    case 0:dots(d,'#4a0a1f','#ff3b6b',false);return;
+    case 1:{ // grid over normal video
+      ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=1;ctx.beginPath();
+      for(let x=0;x<=W;x+=14){ctx.moveTo(x,0);ctx.lineTo(x,H)}
+      for(let y=0;y<=H;y+=14){ctx.moveTo(0,y);ctx.lineTo(W,y)}
+      ctx.stroke();return}
+    case 2:pixelFilter((d,i)=>{const l=lum(d,i);return l<.28?[20,10,30]:l<.55?[255,45,125]:[255,150,20]});break;
+    case 3:dots(d,'#fff','#000',true);return;
+    case 5:pixelFilter((d,i)=>ramp([[20,30,200],[0,170,255],[40,230,120],[255,230,40],[255,120,20]],lum(d,i)));break;
+    case 6:pixelFilter((d,i)=>{const l=lum(d,i);return[Math.min(255,l*255*1.1+30),l*255*.85+20,l*255*.6]});break;
+    case 4:{ // RGB split drawn directly
+      ctx.globalCompositeOperation='lighter';
+      const src=ctx.canvas,o=6;
+      const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;const t=tmp.getContext('2d');
+      ['#f00','#0f0','#00f'].forEach((c,k)=>{t.globalCompositeOperation='source-over';t.clearRect(0,0,W,H);
+        t.drawImage(src,0,0);t.globalCompositeOperation='multiply';t.fillStyle=c;t.fillRect(0,0,W,H);
+        ctx.drawImage(tmp,(k-1)*o,0)});
+      ctx.globalCompositeOperation='source-over';return}
+    case 7:{ctx.imageSmoothingEnabled=true;ctx.drawImage(sc,0,0,W,H);
+      ctx.fillStyle='rgba(255,255,255,.45)';ctx.fillRect(0,0,W,H);return}
+  }
+  ctx.imageSmoothingEnabled=fi===5||fi===6;ctx.drawImage(mc,0,0,W,H);ctx.imageSmoothingEnabled=true;
+}
+function area(p){let a=0;for(let i=0;i<4;i++){const[x1,y1]=p[i],[x2,y2]=p[(i+1)%4];a+=x1*y2-x2*y1}return Math.abs(a)/2}
+function frame(t){
+  drawSource(t);
+  const p=pts||quad,a=area(p),ratio=a/(W*H);
+  // gesture: collapse the frame, then open it again -> next filter
+  if(ratio<0.008)collapsed=true;
+  else if(collapsed&&ratio>0.03){collapsed=false;setF(fi+1)}
+  if(ratio>0.002){
+    ctx.save();ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);for(let i=1;i<4;i++)ctx.lineTo(p[i][0],p[i][1]);ctx.closePath();ctx.clip();
+    renderFilter();ctx.restore();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);for(let i=1;i<4;i++)ctx.lineTo(p[i][0],p[i][1]);ctx.closePath();ctx.stroke();
+  }
+  if(!pts){quad.forEach(([x,y])=>{ctx.fillStyle='#fff';ctx.strokeStyle='#e5246b';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,10,0,7);ctx.fill();ctx.stroke()})}
+  requestAnimationFrame(frame);
+}
+// manual corner dragging
+function pos(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]}
+cv.addEventListener('pointerdown',e=>{if(pts)return;const[x,y]=pos(e);
+  let best=-1,bd=40*40;quad.forEach((q,i)=>{const dd=(q[0]-x)**2+(q[1]-y)**2;if(dd<bd){bd=dd;best=i}});
+  drag=best;if(best>=0)cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{if(drag<0)return;quad[drag]=pos(e)});
+cv.addEventListener('pointerup',()=>drag=-1);
+
+// camera + hand tracking
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);setTimeout(()=>rej(new Error('timeout')),12000)})}
+document.getElementById('start').onclick=async function(){
+  this.disabled=true;stat('در حال روشن کردن دوربین…');
+  try{
+    const s=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'}});
+    video.srcObject=s;await video.play();mode='cam';
+  }catch(e){stat('دسترسی به دوربین ممکن نشد. در حالت نمایشی می‌توانید گوشه‌های قاب را بکشید.');this.disabled=false;return}
+  stat('در حال بارگذاری ردیاب دست…');
+  try{
+    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.js');
+    const hands=new Hands({locateFile:f=>'https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/'+f});
+    hands.setOptions({maxNumHands:2,modelComplexity:0,minDetectionConfidence:.6,minTrackingConfidence:.5});
+    hands.onResults(r=>{
+      const L=r.multiHandLandmarks||[];
+      if(L.length<2){pts=null;return}
+      const hs=L.map(h=>h).sort((a,b)=>b[0].x-a[0].x); // mirrored: larger x = left on screen
+      const P=(h,i)=>[(1-h[i].x)*W,h[i].y*H];
+      pts=[P(hs[0],8),P(hs[1],8),P(hs[1],4),P(hs[0],4)];
+      pts=pts.map(p=>p);
+    });
+    await hands.initialize();
+    stat('با دو دست قاب بسازید (شست و اشاره). برای فیلتر بعدی قاب را ببندید و دوباره باز کنید.');
+    (async function loop(){await hands.send({image:video});requestAnimationFrame(loop)})();
+  }catch(e){
+    stat('ردیاب دست بارگذاری نشد. گوشه‌های قاب را با انگشت یا ماوس بکشید.');
+  }
+};
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
